@@ -5,9 +5,11 @@ const scissorsValue = "scissors";
 let numberOfRounds = 0;
 let playerWins = 0;
 let computerWins = 0;
+let draws = 0;
 
 function getPlayerChoice(){
     let choice;
+    
     playerInput = prompt("Which one do you choose?");
 
     while(playerInput.toLowerCase() != rockValue &&
@@ -57,46 +59,24 @@ function getComputerChoice(){
 function playRound(playerOption, computerOption){
 
     if(playerOption === computerOption){
-        console.log("It's a draw!");
-        console.log("--------------------------");
-        console.log();
+        draws++;
+        return "It's a draw!";
     }
-    else if(playerOption === rockValue && computerOption === scissorsValue){
-        console.log("The player wins!");
+    else if(
+    (playerOption === rockValue && computerOption === scissorsValue) || 
+    (playerOption === paperValue && computerOption === rockValue) || 
+    (playerOption === scissorsValue && computerOption === paperValue)){
         playerWins++;
-        console.log("--------------------------");
-        console.log();
+        return "The player wins!";
     }
-    else if(playerOption === paperValue && computerOption === rockValue){
-        console.log("The player wins!");
-        playerWins++;
-        console.log("--------------------------");
-        console.log();
-    }
-    else if(playerOption === scissorsValue && computerOption === paperValue){
-        console.log("The player wins!");
-        playerWins++;
-        console.log("--------------------------");
-        console.log();
-    }
-    else if(playerOption === rockValue && computerOption === paperValue){
-        console.log("The computer wins!");
+    else if(
+    (playerOption === rockValue && computerOption === paperValue) ||
+    (playerOption === paperValue && computerOption === scissorsValue) || 
+    (playerOption === scissorsValue && computerOption === rockValue)){
         computerWins++;
-        console.log("--------------------------");
-        console.log();
+        return "The computer wins!";
     }
-    else if(playerOption === paperValue && computerOption === scissorsValue){
-        console.log("The computer wins!");
-        computerWins++;
-        console.log("--------------------------");
-        console.log();
-    }
-    else if(playerOption === scissorsValue && computerOption === rockValue){
-        console.log("The computer wins!");
-        computerWins++;
-        console.log("--------------------------");
-        console.log();
-    }
+   
 
 }
 
@@ -111,7 +91,7 @@ function declareWinner(){
         console.log("The computer has won!");
     }
 
-    console.log(`Score => P : ${playerWins} | C : ${computerWins}`);
+    console.log(`Score => P : ${playerWins} | C : ${computerWins} | D : ${draws}`);
 }
 
 function startGame(){
@@ -121,7 +101,10 @@ function startGame(){
         let playerChoice = getPlayerChoice();
         let computerChoice = getComputerChoice();
 
-        playRound(playerChoice, computerChoice);
+        let res = playRound(playerChoice, computerChoice);
+      
+        console.log(res);
+        console.log('---------------------------------');
 
         numberOfRounds++;
 
