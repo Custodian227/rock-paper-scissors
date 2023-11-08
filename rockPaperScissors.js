@@ -1,116 +1,182 @@
+//String constants for all choices
 const rockValue = "rock";
 const paperValue = "paper";
 const scissorsValue = "scissors";
 
-let numberOfRounds = 0;
+//Variables for keeping track of the score
 let playerWins = 0;
 let computerWins = 0;
 let draws = 0;
+let gameScore; 
 
-function getPlayerChoice(){
-    let choice;
-    
-    playerInput = prompt("Which one do you choose?");
+//UI
+const rockButton = document.createElement('button');
+const paperButton = document.createElement('button');
+const scissorsButton = document.createElement('button');
+const newGameButton = document.createElement('button');
 
-    while(playerInput.toLowerCase() != rockValue &&
-          playerInput.toLowerCase() != paperValue &&
-          playerInput.toLowerCase() != scissorsValue)
-          {
-                alert(`Please type in ${rockValue}, ${paperValue}, or ${scissorsValue}`);
-                playerInput = prompt("Which one do you choose?");
-          }
+rockButton.textContent = 'ROCK';
+paperButton.textContent = 'PAPER';
+scissorsButton.textContent = 'SCISSORS';
+newGameButton.textContent = 'NEW GAME';
 
-    if(playerInput.toLowerCase() === rockValue){
-        choice = rockValue;
-    }
-    else if(playerInput.toLowerCase() === paperValue){
-        choice = paperValue;
-    }
-    else if(playerInput.toLowerCase() === scissorsValue){
-        choice = scissorsValue;
-    }
-    
-    console.log(`The player chose ${choice}`);
-    console.log();
+document.body.appendChild(rockButton);
+document.body.appendChild(paperButton);
+document.body.appendChild(scissorsButton);
 
-    return choice;
-}
+const playerChoiceParagraph = document.createElement('p');
+const computerChoiceParagraph = document.createElement('p');
+const roundResultParagpaph = document.createElement('p');
+const scoreParagraph = document.createElement('p');
+const declareWinnerParagraph = document.createElement('p');
 
-function getComputerChoice(){
-    let choice;
+const buttons = document.querySelectorAll('button');
+
+buttons.forEach((button) => {
+    button.style.width = '100px';
+    button.style.height = '50px';
+    button.style.borderColor = 'black';
+    button.style.marginRight = '10px';
+});
+
+//Returns a randomly generated rps decision of the computer
+function getComputerSelection(){
+    let computerSelection;
     let randomNumber = Math.floor(Math.random() * 3);
 
     if(randomNumber === 0){
-        choice = rockValue;
+        computerSelection = rockValue;
     }
     else if(randomNumber === 1){
-        choice = paperValue;
+        computerSelection = paperValue;
     }
     else {
-        choice = scissorsValue;
+        computerSelection = scissorsValue;
     }
 
-    console.log(`The computer chose ${choice}`);
-    console.log();
-
-    return choice;
+    return computerSelection;
 }
 
-function playRound(playerOption, computerOption){
+//Updates all result messages
+function updateGameData(playerSelectionMessage, computerSelectionMessage, roundResultMessage, scoreMessage){
+    playerChoiceParagraph.textContent = playerSelectionMessage;
+    computerChoiceParagraph.textContent = computerSelectionMessage;
+    roundResultParagpaph.textContent = roundResultMessage;
+    scoreParagraph.textContent = scoreMessage;
 
-    if(playerOption === computerOption){
+    document.body.appendChild(playerChoiceParagraph);
+    document.body.appendChild(computerChoiceParagraph);
+    document.body.appendChild(roundResultParagpaph);  
+    document.body.appendChild(scoreParagraph);
+}
+
+//Determines the result of the round by comparing the rps choices of the player and the computer
+function playRound(playerSelection, computerSelection){
+    let playerSelectionMessage = `You chose ${playerSelection}`;
+    let computerSelectionMessage = `The computer chose ${computerSelection}`;
+    let roundResultMessage = '';
+    let scoreMessage = ''
+
+    if(playerSelection === computerSelection && (computerWins <= 5 || playerWins <= 5)){
         draws++;
-        return "It's a draw!";
+        roundResultMessage = "It's a draw!";
+        scoreMessage = getGameScore();   
+        updateGameData(playerSelectionMessage, computerSelectionMessage, roundResultMessage, scoreMessage);
     }
     else if(
-    (playerOption === rockValue && computerOption === scissorsValue) || 
-    (playerOption === paperValue && computerOption === rockValue) || 
-    (playerOption === scissorsValue && computerOption === paperValue)){
+    (playerSelection === rockValue && computerSelection === scissorsValue) || 
+    (playerSelection === paperValue && computerSelection === rockValue) || 
+    (playerSelection === scissorsValue && computerSelection === paperValue)  && (computerWins <= 5 || playerWins <= 5)){
         playerWins++;
-        return "The player wins!";
+        roundResultMessage =  "The player wins!"; 
+        scoreMessage = getGameScore();
+        updateGameData(playerSelectionMessage, computerSelectionMessage, roundResultMessage, scoreMessage);
+
+        if (playerWins === 5) {
+            gameOver("Congratulations! You Won!");
+        }
     }
     else if(
-    (playerOption === rockValue && computerOption === paperValue) ||
-    (playerOption === paperValue && computerOption === scissorsValue) || 
-    (playerOption === scissorsValue && computerOption === rockValue)){
+    (playerSelection === rockValue && computerSelection === paperValue) ||
+    (playerSelection === paperValue && computerSelection === scissorsValue) || 
+    (playerSelection === scissorsValue && computerSelection === rockValue)  && (computerWins <= 5 || playerWins <= 5)){
         computerWins++;
-        return "The computer wins!";
-    }
-   
+        roundResultMessage = "The computer wins!";
+        scoreMessage = getGameScore();
+        updateGameData(playerSelectionMessage, computerSelectionMessage, roundResultMessage, scoreMessage);
 
+        if (computerWins === 5) {
+            gameOver("The computer won!");
+        }
+    }
 }
 
-function declareWinner(){
-    if(playerWins === computerWins){
-        console.log("It's a Tie!");
-    }
-    else if(playerWins > computerWins){
-        console.log("The player has won!");
-    }
-    else{
-        console.log("The computer has won!");
-    }
-
-    console.log(`Score => P : ${playerWins} | C : ${computerWins} | D : ${draws}`);
+function gameOver(gameResultMessage){
+    disableButtons();
+    declareWinnerParagraph.textContent = gameResultMessage;
+    document.body.appendChild(declareWinnerParagraph);  
+    document.body.appendChild(newGameButton);
 }
 
-function startGame(){
+function newGame(){
+    playerWins = 0;
+    computerWins = 0;
+    draws = 0;
+    gameScore = '';
 
-    while(numberOfRounds < 5){
-     
-        let playerChoice = getPlayerChoice();
-        let computerChoice = getComputerChoice();
-
-        let res = playRound(playerChoice, computerChoice);
-      
-        console.log(res);
-        console.log('---------------------------------');
-
-        numberOfRounds++;
-
-    }
-
-    declareWinner();
+    document.body.removeChild(playerChoiceParagraph);
+    document.body.removeChild(computerChoiceParagraph);
+    document.body.removeChild(roundResultParagpaph);
+    document.body.removeChild(scoreParagraph);
+    document.body.removeChild(declareWinnerParagraph);
+    document.body.removeChild(newGameButton);
+    enableButtons();
 }
 
-startGame();
+function getGameScore(){
+    return gameScore = `Player: ${playerWins} | Draws: ${draws} | Computer: ${computerWins}`;
+}
+
+//Disables the rps buttons when a winner is elected
+function disableButtons() {
+    buttons.forEach(elem => {
+        elem.disabled = true
+    })
+}
+
+//Enables the rps buttons when a new game is started
+function enableButtons() {
+    buttons.forEach(elem => {
+        elem.disabled = false
+    })
+}
+
+//Event Listeners for all buttons
+//The parameters of the playRound() function are the corresponding string constant to the given button and the function that determines the computer decision (getComputerChoice())
+rockButton.addEventListener('click', () => {
+    playRound(rockValue, getComputerSelection())
+});
+
+paperButton.addEventListener('click', () =>
+    playRound(paperValue, getComputerSelection())
+);
+
+scissorsButton.addEventListener('click', () =>
+    playRound(scissorsValue, getComputerSelection())
+);
+
+newGameButton.addEventListener('click', () => 
+    newGame()
+);
+
+
+
+
+
+
+
+
+
+    
+
+
