@@ -15,14 +15,38 @@ const paperButton = document.createElement('button');
 const scissorsButton = document.createElement('button');
 const newGameButton = document.createElement('button');
 
-rockButton.textContent = 'ROCK';
-paperButton.textContent = 'PAPER';
-scissorsButton.textContent = 'SCISSORS';
-newGameButton.textContent = 'NEW GAME';
+const rpsContainer = document.querySelector('#rps-container');
+const scoreContainer = document.querySelector('#score-container');
 
-document.body.appendChild(rockButton);
-document.body.appendChild(paperButton);
-document.body.appendChild(scissorsButton);
+rockButton.id = 'rock-button';
+rockButton.style.backgroundImage = "url(images/rock.jpg)"
+rockButton.style.backgroundSize = 'cover';
+rockButton.style.backgroundRepeat = 'no-repeat';
+
+paperButton.id = 'paper-button';
+paperButton.style.backgroundImage = "url(images/paper.jpg)"
+paperButton.style.backgroundSize = 'cover';
+paperButton.style.backgroundRepeat = 'no-repeat';
+
+scissorsButton.id = 'scissors-button';
+scissorsButton.style.backgroundImage = "url(images/scissors.jpg)"
+scissorsButton.style.backgroundSize = 'cover';
+scissorsButton.style.backgroundRepeat = 'no-repeat';
+
+newGameButton.textContent = 'NEW GAME';
+newGameButton.style.fontFamily = 'monospace';
+newGameButton.style.padding = '1.5rem';
+newGameButton.style.color = 'white';
+newGameButton.style.backgroundColor = "#001830";
+newGameButton.style.borderRadius = '10px';
+
+rockButton.classList.add('rps-button');
+paperButton.classList.add('rps-button');
+scissorsButton.classList.add('rps-button');
+
+rpsContainer.appendChild(rockButton);
+rpsContainer.appendChild(paperButton);
+rpsContainer.appendChild(scissorsButton);
 
 const playerChoiceParagraph = document.createElement('p');
 const computerChoiceParagraph = document.createElement('p');
@@ -30,14 +54,14 @@ const roundResultParagpaph = document.createElement('p');
 const scoreParagraph = document.createElement('p');
 const declareWinnerParagraph = document.createElement('p');
 
-const buttons = document.querySelectorAll('button');
+playerChoiceParagraph.style.marginTop = "2rem";
+roundResultParagpaph.style.margin = '1rem 0rem';
+scoreParagraph.style.margin = '1rem 0rem';
+declareWinnerParagraph.style.margin = '1rem 0rem';
+declareWinnerParagraph.style.fontSize = '1.5em';
+declareWinnerParagraph.style.color = 'goldenrod';
 
-buttons.forEach((button) => {
-    button.style.width = '100px';
-    button.style.height = '50px';
-    button.style.borderColor = 'black';
-    button.style.marginRight = '10px';
-});
+const buttons = document.querySelectorAll('button');
 
 //Returns a randomly generated rps decision of the computer
 function getComputerSelection(){
@@ -64,10 +88,10 @@ function updateGameData(playerSelectionMessage, computerSelectionMessage, roundR
     roundResultParagpaph.textContent = roundResultMessage;
     scoreParagraph.textContent = scoreMessage;
 
-    document.body.appendChild(playerChoiceParagraph);
-    document.body.appendChild(computerChoiceParagraph);
-    document.body.appendChild(roundResultParagpaph);  
-    document.body.appendChild(scoreParagraph);
+    scoreContainer.appendChild(playerChoiceParagraph);
+    scoreContainer.appendChild(computerChoiceParagraph);
+    scoreContainer.appendChild(roundResultParagpaph);  
+    scoreContainer.appendChild(scoreParagraph);
 }
 
 //Determines the result of the round by comparing the rps choices of the player and the computer
@@ -93,7 +117,7 @@ function playRound(playerSelection, computerSelection){
         updateGameData(playerSelectionMessage, computerSelectionMessage, roundResultMessage, scoreMessage);
 
         if (playerWins === 5) {
-            gameOver("Congratulations! You Won!");
+            gameOver("Congratulations! You Won The Game!");
         }
     }
     else if(
@@ -106,7 +130,7 @@ function playRound(playerSelection, computerSelection){
         updateGameData(playerSelectionMessage, computerSelectionMessage, roundResultMessage, scoreMessage);
 
         if (computerWins === 5) {
-            gameOver("The computer won!");
+            gameOver("You Lost!");
         }
     }
 }
@@ -114,8 +138,8 @@ function playRound(playerSelection, computerSelection){
 function gameOver(gameResultMessage){
     disableButtons();
     declareWinnerParagraph.textContent = gameResultMessage;
-    document.body.appendChild(declareWinnerParagraph);  
-    document.body.appendChild(newGameButton);
+    scoreContainer.appendChild(declareWinnerParagraph);  
+    scoreContainer.appendChild(newGameButton);
 }
 
 function newGame(){
@@ -124,12 +148,12 @@ function newGame(){
     draws = 0;
     gameScore = '';
 
-    document.body.removeChild(playerChoiceParagraph);
-    document.body.removeChild(computerChoiceParagraph);
-    document.body.removeChild(roundResultParagpaph);
-    document.body.removeChild(scoreParagraph);
-    document.body.removeChild(declareWinnerParagraph);
-    document.body.removeChild(newGameButton);
+    scoreContainer.removeChild(playerChoiceParagraph);
+    scoreContainer.removeChild(computerChoiceParagraph);
+    scoreContainer.removeChild(roundResultParagpaph);
+    scoreContainer.removeChild(scoreParagraph);
+    scoreContainer.removeChild(declareWinnerParagraph);
+    scoreContainer.removeChild(newGameButton);
     enableButtons();
 }
 
